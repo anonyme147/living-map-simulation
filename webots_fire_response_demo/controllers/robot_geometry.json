@@ -1,0 +1,35 @@
+{
+  "_note": "Authoritative Webots actuation calibration; intentionally independent from estimator signs in map_parameter.yaml.",
+  "base_frame": "base_link",
+  "wheel_radius_m": 0.11,
+  "track_width_m": 0.394,
+  "frame_convention": "base_link: +X forward, +Y left, +Z up; yaw positive counter-clockwise in the XY plane",
+  "drive_sign": -1.0,
+  "encoder_sign": {"left": -1.0, "right": -1.0},
+  "wheel_anchors_m": {
+    "front_left": [0.1331, 0.197, 0.11],
+    "front_right": [0.1331, -0.197, 0.11],
+    "rear_left": [-0.1331, 0.197, 0.11],
+    "rear_right": [-0.1331, -0.197, 0.11]
+  },
+  "lidar": {
+    "mount_bracket_m": [0.254, 0.0, 0.14],
+    "sensor_offset_m": [0.0, 0.0, 0.0],
+    "sensor_origin_m": [0.254, 0.0, 0.14],
+    "rotation_axis": [1.0, 0.0, 0.0],
+    "frame": "base_link"
+  },
+  "camera": {
+    "name": "front camera",
+    "width_px": 640,
+    "height_px": 480,
+    "fov_horizontal_rad": 1.047,
+    "intrinsics": {"fx": 554.3, "fy": 554.3, "cx": 320, "cy": 240},
+    "mount_translation_m": [0.226691, -0.00299614, 0.300396],
+    "mount_rotation_axis_angle": [-0.5777721922150181, 0.5771411920050951, 0.5771371920037643, 2.09375],
+    "camera_local_translation_m": [-0.1331, -0.197, 0.11],
+    "camera_local_rotation_axis_angle": [0.577344207923065, -0.5773402080525839, -0.5773663912486487, 2.094382817112215],
+    "frame": "base_link"
+  },
+  "source": "Webots R2025a Pioneer3at.proto + supplied world extensionSlot"
+}

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pioneer Sensor Console</title>
+  <style>
+    :root { color-scheme: dark; --bg:#071019; --panel:#0d1a25; --line:#254157; --cyan:#38bdf8; --green:#4ade80; --amber:#fbbf24; --muted:#9fb5c7; }
+    * { box-sizing:border-box; } body { margin:0; min-width:310px; background:var(--bg); color:#e7f0f8; font:12px Arial,sans-serif; }
+    header { padding:13px 14px 10px; background:#0a1520; border-bottom:1px solid var(--line); }
+    h1 { margin:0; color:var(--cyan); font:700 14px monospace; letter-spacing:.08em; } .sub { margin-top:5px; color:var(--muted); font:10px monospace; }
+    .section { margin:10px; border:1px solid var(--line); background:var(--panel); } .title { padding:8px 10px; border-bottom:1px solid var(--line); color:var(--cyan); font:700 11px monospace; letter-spacing:.08em; }
+    #scan { display:block; width:100%; aspect-ratio:1.65; background:#03090d; } .stats { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); }
+    .stat { min-height:48px; padding:8px 10px; background:var(--panel); } .label { color:var(--muted); font:9px monospace; letter-spacing:.05em; } .value { margin-top:5px; color:var(--green); font:700 15px monospace; }
+    .camera { position:relative; min-height:150px; background:#020609; overflow:hidden; } #camera { display:none; width:100%; height:auto; } #empty { padding:52px 12px; color:var(--muted); text-align:center; font:11px monospace; }
+    #boxes { position:absolute; inset:0; pointer-events:none; } .box { position:absolute; border:2px solid var(--green); box-shadow:0 0 10px rgba(74,222,128,.6); } .box.fire { border-color:#fb923c; box-shadow:0 0 10px rgba(251,146,60,.7); }
+    .tag { position:absolute; top:-22px; left:-2px; padding:4px 5px; background:var(--green); color:#02140a; font:700 9px monospace; white-space:nowrap; } .fire .tag { background:#fb923c; color:#211004; }
+    #events { padding:8px 10px; min-height:40px; color:var(--muted); font:11px/1.55 monospace; } .event { margin:3px 0; color:var(--green); } .event.fire { color:#fb923c; }
+    footer { padding:8px 12px 12px; color:var(--muted); font:10px monospace; } #state { color:var(--amber); }
+  </style>
+</head>
+<body>
+  <header><h1>PIONEER SENSOR CONSOLE</h1><div class="sub">LIVE LIDAR + FRONT-CAMERA CV</div></header>
+  <section class="section"><div class="title">360° LIDAR RANGE SCAN</div><canvas id="scan"></canvas><div class="stats"><div class="stat"><div class="label">NEAREST OBSTACLE</div><div id="nearest" class="value">—</div></div><div class="stat"><div class="label">FORWARD CLEARANCE</div><div id="forward" class="value">—</div></div><div class="stat"><div class="label">VALID RETURNS</div><div id="points" class="value">0</div></div><div class="stat"><div class="label">NAVIGATION</div><div id="nav" class="value">SEARCH</div></div></div></section>
+  <section class="section"><div class="title">FRONT CAMERA — CV TARGETS</div><div class="camera"><img id="camera" alt="Pioneer front camera"><div id="boxes"></div><div id="empty">Waiting for the robot camera…</div></div></section>
+  <section class="section"><div class="title">CONFIRMED TARGETS</div><div id="events">No target confirmed yet.</div></section>
+  <footer><span id="state">WAITING FOR CONTROLLER TELEMETRY</span> · Dock this panel at the right of the Webots window.</footer>
+  <script type="module" src="pioneer_ops_panel.js"></script>
+</body>
+</html>

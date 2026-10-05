@@ -1,0 +1,74 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE & OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Simulation temporary logs
+simulation/logs/
+*.pid
+scratch/
+# Generated local artifacts -- never publish these with the source repository.
+/output/
+/tmp/
+/.tmp_report_review/
+
+# Keep the anonymous repository source-only: no reports, handovers, or notes.
+*.md
+
+# Downloaded ML models, vendored repositories, cache files, and recordings are
+# not source code and exceed normal GitHub repository limits.
+**/vendor/
+**/models/
+**/weights/
+**/__pycache__/
+*.pt
+*.pth
+*.gguf
+*.safetensors
+*.zip
+*.mp4
+*.wbproj
+
+# Generated Webots camera/debug captures.
+**/front_camera_*.png
+**/*-locate-output.json
+**/*-timing.json
+**/worlds/.*.jpg

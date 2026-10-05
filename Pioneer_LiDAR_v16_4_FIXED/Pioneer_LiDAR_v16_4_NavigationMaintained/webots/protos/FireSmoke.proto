@@ -1,0 +1,66 @@
+#VRML_SIM R2025a utf8
+# template language: javascript
+# Adapted from angel-ayala/webots-fire-scene (research-use license).
+# Animated upright fire display for the Living Map visual companion.
+
+PROTO FireSmoke [
+  field SFString name "fire"
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 0 1 0
+  field SFFloat fireHeight 1.8
+  field SFFloat fireRadius 0.55
+  field SFString controller "fire_movement"
+  field MFString controllerArgs []
+  field SFString customData ""
+  field SFBool synchronization TRUE
+  field SFString model "fire"
+  field MFColor recognitionColors [ 1 0.2 0 ]
+]
+{
+Robot {
+  translation IS translation
+  rotation IS rotation
+  name IS name
+  controller IS controller
+  controllerArgs IS controllerArgs
+  customData IS customData
+  synchronization IS synchronization
+  model IS model
+  recognitionColors IS recognitionColors
+  children [
+    Display {
+      rotation 1 0 0 0
+      translation 0 0 %<= fields.fireHeight.value * 0.5 >%
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColorMap ImageTexture { repeatS FALSE repeatT FALSE }
+            roughness 1
+            metalness 0
+            emissiveColor 1 0.1 0
+            IBLStrength 6
+          }
+          geometry Cylinder {
+            bottom FALSE
+            top FALSE
+            height IS fireHeight
+            radius IS fireRadius
+            subdivision 12
+          }
+          castShadows FALSE
+        }
+      ]
+      name "fireDisplay"
+      width 320
+      height 320
+    }
+    PointLight {
+      color 1 0.35 0.05
+      intensity 3.5
+      attenuation 0 0 1
+      location 0 0 1.15
+      radius 7
+    }
+  ]
+}
+}

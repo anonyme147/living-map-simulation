@@ -1,0 +1,10 @@
+# One prompt per line. Synonyms are intentionally retained for lying-person recall.
+person
+lying person
+person lying down
+human lying on ground
+casualty
+fire
+smoke
+house
+tree

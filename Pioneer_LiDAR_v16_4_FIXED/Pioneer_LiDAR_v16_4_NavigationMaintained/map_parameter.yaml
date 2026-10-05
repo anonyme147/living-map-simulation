@@ -1,0 +1,239 @@
+# Pioneer LiDAR viewer startup parameters
+# Launch with: python run.py map_parameter.yaml
+
+server:
+  host: "0.0.0.0"
+  port: 5000
+
+websocket:
+  url: "ws://localhost:8765"
+
+localization:
+  # Simulated GPS availability. The robot uses ground truth outside this
+  # circle and wheel/IMU EKF localization inside it.
+  gps_denied_zone:
+    enabled: true
+    center_x: 18.1601
+    center_y: 18.1601
+    radius_m: 21.0
+  ekf:
+    # Webots Pioneer IMU yaw is pi/2 behind the robot forward/world yaw in
+    # this scene. Keep this configurable for different robot conventions.
+    imu_yaw_offset_rad: 1.5707963267948966
+
+detection:
+  # yolo | locate | hybrid
+  mode: hybrid
+  interval_sec: 5.0
+  confidence: 0.50
+  candidate_confidence: 0.10
+  image_size: 640
+  object_list_file: config/detection_objects.txt
+  fire_smoke:
+    enabled: true
+    model: models/detection/fire_smoke_yolov8n.pt
+    confidence: 0.25
+    image_size: 320
+    interval_sec: 5.0
+  locate_anything:
+    threads: 8
+    mode: fast
+    timeout_sec: 900.0
+
+lidar:
+  # Azimuth/pitch command offset. The physical LiDAR position is defined
+  # by the Webots mount: +0.254 m forward of the robot centre, y=0, z=0.14 m.
+  # Do not use 180° here: the physical mount is zero-pitch in the supplied world.
+  offset_angle_deg: 180.0
+
+  # Angular filter used by the LiDAR/controller.
+  angle_filter:
+    min_deg: 270.0
+    max_deg: 90.0
+
+viewer:
+  # Travelling-area rendering limits.
+  visible_max_points: 800000
+  surrounding_max_points: 800000
+  visible_half_size_m: 20.0
+  surrounding_half_size_m: 40.0
+  cell_size_m: 2.0
+
+  # Initial viewer display options.
+  ground_visible: true
+  invert_x: false
+  invert_y: false
+  invert_z: false
+
+  # Adaptive rendering: persistent map/navigation remain point-based; only
+  # the viewer representation is reduced when local exploration is mature
+  # or the renderer approaches its configured workload budget.
+  adaptive_representation_enabled: true
+  adaptive_representation_mode: auto   # auto | points | voxels
+  adaptive_local_coverage_threshold: 0.50
+  adaptive_tile_radius: 2
+  adaptive_voxel_size_m: 0.01
+  adaptive_voxel_average_position: true
+  adaptive_max_voxels: 0
+  adaptive_overload_point_threshold: 1000000
+  adaptive_overload_visible_ratio: 0.90
+  adaptive_refresh_min_interval_ms: 120
+  adaptive_overload_refresh_ms: 35
+  # 3D point/voxel rendering is independent from navigation and backup.
+  # false reduces browser/WebGL load while Auto Pilot is running.
+  show_3d_map_during_autopilot: false
+
+backup:
+  interval_ms: 60000
+  threshold_points: 750000
+
+trajectory:
+  max_render_points: 50000
+
+
+navigation:
+  # Navigation is executed in the browser, not in the Webots controller.
+  enabled: true
+  resolution_m: 0.10
+  local_map_resolution_m: 0.05
+  local_sensor_radius_m: 1.0
+  # Global navigation may use the full accumulated LiDAR ray range. The 1 m
+  # value above is ONLY the dynamic local 2D safety-map radius.
+  global_scan_min_range_m: 0.20
+  global_scan_max_range_m: 12.0
+  # Obstacle height is measured RELATIVE TO THE GROUND PLANE SUPPORTING THE ROBOT.
+  # GT getPosition() is assumed to represent the robot geometric centre for this
+  # Pioneer 3-AT test. With a 277 mm body height, the default ground plane is
+  # 0.1385 m below the robot centre in robot-local Z.
+  robot_height_m: 0.277
+  ground_reference_z_m: 0.1385
+  # +5 cm .. +1.0 m above the supporting ground = obstacle.
+  obstacle_positive_min_height_m: 0.10
+  obstacle_positive_max_height_m: 1.00
+  # 15 cm or more below the supporting ground = obstacle/deep-drop evidence.
+  obstacle_negative_max_height_m: -0.30
+  robot_width_m: 0.50
+  robot_length_m: 0.51
+  safety_margin_m: 0.20
+  max_linear_speed_mps: 0.15
+  max_angular_speed_rps: 1.20
+  lookahead_m: 0.9
+  goal_reach_m: 0.20
+  # Navigation theta = controller yaw + this offset.
+  heading_offset_rad: 1.5707963267948966
+  # false: remain stopped in TARGET REACHED; true: resume full-map exploration.
+  continue_exploration_after_target_reached: true
+  terminal_approach_distance_m: 1.0
+  replan_interval_ms: 350
+  # Mission completion is based on persistent EXPLORATION TILES, not raw known cells.
+  # Knowledge coverage remains available as a diagnostic metric.
+  coverage_target: 0.85
+  exploration_tile_size_m: 0.50
+  # A tile is considered completely explored when this fraction of its
+  # eligible 2D navigation cells are known from accumulated old + new data.
+  tile_cov_complete_rate: 0.85
+  exploration_min_observations: 3
+  exploration_min_view_angles: 2
+  exploration_min_view_angle_deg: 30.0
+  exploration_min_viewpoint_distance_m: 0.20
+  resume_loaded_exploration: true
+  # Outside-area recovery follows the previously travelled trajectory back to
+  # the nearest valid point inside the mission area, then resumes exploration.
+  outside_area_recovery_enabled: true
+  outside_area_recovery_mode: path_return
+  outside_area_warning_distance_m: 0.50
+  outside_area_recovery_waypoint_tolerance_m: 0.20
+  outside_area_recovery_max_path_search_distance_m: 5.0
+  outside_area_recovery_speed_scale: 0.45
+  target_known_percent: 85
+  return_home: true
+  # Local accumulated-cloud filtering / exploration diagnostics.
+  local_min_radius_m: 0.05
+  local_voxel_size_m: 0.05
+  frontier_min_gain_cells: 3
+  frontier_min_distance_m: 0.35
+  exploration_probe_distance_m: 0.65
+  debug_interval_ms: 250
+  # Obstacle classification is shared by global occupancy and the local 2D safety map.
+  # The persistent 3D cloud remains in WORLD coordinates for visualization/querying;
+  # classification uses the current GT pose to transform each point into robot-local
+  # coordinates, then measures height against the local supporting-ground reference.
+  # Automatic NAVIGATING <-> REPLAN rebooting is disabled; REPLAN only selects
+  # the next incomplete tile, then NAVIGATING executes the global A* path.
+  navigation_mode_loop_recovery_enabled: false
+  navigation_mode_loop_threshold: 6
+  navigation_mode_loop_window_ms: 12000
+  navigation_mode_loop_reboot_cooldown_ms: 15000
+  # Auto Pilot remains OFF for a full second during automatic loop recovery.
+  navigation_mode_loop_off_ms: 1000
+  command_watchdog_timeout_sec: 0.75
+  # Backup local-map unknown-cell inference. Real LiDAR/point-cloud evidence has priority.
+  local_inference_enabled: true
+  local_inference_coverage: 0.75
+  local_inference_min_known_neighbors: 6
+  local_inference_passes: 3
+  local_inference_neighbor_radius_cells: 1
+  local_inference_tie_class: clear
+  local_recovery_require_real_neighbors: true
+  # All local-map geometry is configurable here. The LiDAR is mounted +0.254 m
+  # forward of the robot centre in the supplied Webots world.
+  local_lidar_origin_x_m: 0.254
+  local_lidar_origin_y_m: 0.0
+  local_map_circle_margin_m: 0.0
+  # Current LiDAR rays are clipped to the local-map circle instead of being
+  # discarded when their physical hit is farther than the local radius.
+  local_ray_clip_margin_m: 0.0
+  local_clearance_start_m: 0.08
+  local_clearance_step_m: 0.025
+  local_lateral_step_m: 0.05
+  # Allow recovery only in/around sections physically traversed by current LiDAR rays.
+  local_recovery_ray_section_cells: 2
+  # Unknown local cells do not by themselves stop exploration; real obstacle/safety evidence does.
+  unknown_is_obstacle: false
+  # Short-horizon safety controls. Boundary is a hard mission constraint.
+  boundary_buffer_m: 0.10
+  boundary_lookahead_m: 0.45
+  local_avoidance_distance_m: 0.75
+  local_avoidance_heading_step_deg: 10.0
+  local_avoidance_heading_min_deg: -170.0
+  local_avoidance_heading_max_deg: 170.0
+  local_avoidance_angular_gain: 1.8
+  local_avoidance_linear_speed_scale: 0.45
+  local_avoidance_heading_penalty: 1.8
+  local_avoidance_turn_penalty: 0.12
+  local_avoidance_clearance_weight: 2.0
+  local_avoidance_unknown_penalty: 0.12
+  local_avoidance_boundary_bonus: 2.0
+  local_corridor_half_width_scale: 0.20
+  local_forward_safety_distance_m: 0.45
+  path_angular_gain: 2.2
+  path_slow_heading_rad: 0.9
+  # Explicit target navigation rotates before translating when the target/path
+  # bearing is strongly lateral or behind the robot.
+  target_heading_stop_rad: 1.20
+  path_slow_speed_scale: 0.35
+  goal_slowdown_distance_scale: 1.5
+  goal_slowdown_speed_scale: 0.5
+  boundary_slow_speed_scale: 0.45
+  boundary_sample_step_m: 0.05
+  probe_heading_offset_deg: 35.0
+  probe_heading_samples: 5
+  probe_speed_scale: 0.65
+  probe_angular_gain: 2.0
+  probe_slow_heading_rad: 0.8
+  probe_slow_speed_scale: 0.35
+  area:
+    type: circle
+    rectangle:
+      min_x: 0.0
+      max_x: 20.0
+      min_y: -1.0
+      max_y: 23.0
+    circle:
+      # robot_start = the circle is centered once on the first GT pose of the
+      # mapping session, not on wheel/IMU odometry and not on the world origin.
+      # The local 2D map remains robot-centred independently.
+      center_mode: robot_start
+      center_x: 0.0
+      center_y: 0.0
+      radius_m: 15.0

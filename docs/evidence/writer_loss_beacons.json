@@ -1,0 +1,18 @@
+[
+  {
+    "beacon_id": "BF98AC0",
+    "event_type": "victim_detected",
+    "position_local_m": {"x": 5.0, "y": 7.0},
+    "timestamp": "2026-09-10T16:57:07.047051+00:00",
+    "ttl_seconds": 5400,
+    "active_at_mission_end": true
+  },
+  {
+    "beacon_id": "B7B7A61",
+    "event_type": "gas_leak",
+    "position_local_m": {"x": 3.0, "y": 7.0},
+    "timestamp": "2026-09-10T16:57:07.374864+00:00",
+    "ttl_seconds": 1200,
+    "active_at_mission_end": true
+  }
+]

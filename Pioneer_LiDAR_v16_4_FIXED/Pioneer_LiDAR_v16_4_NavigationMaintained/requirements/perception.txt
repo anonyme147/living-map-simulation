@@ -1,0 +1,7 @@
+numpy>=1.24
+PyYAML>=6.0
+ultralytics>=8.0.0
+torch>=2.0.0
+opencv-python>=4.8
+git+https://github.com/ultralytics/CLIP.git
+# Install the pinned Depth Anything V2 metric implementation separately.

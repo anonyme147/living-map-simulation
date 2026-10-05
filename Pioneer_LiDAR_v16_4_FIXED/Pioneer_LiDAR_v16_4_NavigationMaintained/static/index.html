@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pioneer 3-AT — LiDAR 3D Viewer [v11.6 Dynamic 2D Map + Auto Pilot]</title>
+<link rel="stylesheet" href="/static/css/viewer.css">
+</head>
+<body>
+
+
+<div id="hud" class="glass">
+  <div class="hud-header">
+    <div><div class="hud-title">● LiDAR Scanner</div><div class="hud-subtitle">Pioneer 3-AT · Dynamic Mapping + Autonomous Navigation</div></div>
+    <div class="scan-badge off" id="scan-badge"><span class="scan-pulse"></span><span id="scan-badge-text">OFF</span></div>
+  </div>
+  <div class="status-wrap"><div class="status-dot" id="status-dot"></div><span class="status-text disconnected" id="status-text">Disconnected</span></div>
+  <div class="hud-grid">
+    <div class="hud-row full"><span class="hud-label"><span class="icon">◈</span>Points</span><span class="hud-value accent" id="pts">0</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">◉</span>FPS</span><span class="hud-value" id="fps">0</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">◉</span>Msgs</span><span class="hud-value" id="msgs">0</span></div>
+    <div class="hud-divider"></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">⌖</span>Odom X</span><span class="hud-value" id="ox">0.00</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">⌖</span>Odom Y</span><span class="hud-value" id="oy">0.00</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">↻</span>Odom θ</span><span class="hud-value" id="oth">0.0°</span></div>
+    <div class="hud-divider"></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">⤢</span>Roll</span><span class="hud-value" id="imu-roll">0.0°</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">⤡</span>Pitch</span><span class="hud-value" id="imu-pitch">0.0°</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">↻</span>Yaw</span><span class="hud-value" id="imu-yaw">0.0°</span></div>
+    <div class="hud-divider"></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">◈</span>GT X</span><span class="hud-value" id="gx">0.00</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">◈</span>GT Y</span><span class="hud-value" id="gy">0.00</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">◈</span>GT Z</span><span class="hud-value" id="gz">0.00</span></div>
+    <div class="hud-divider"></div>
+    <div class="hud-row full"><span class="hud-label"><span class="icon">◉</span>Rotation</span><span class="hud-value warning" id="rot-mode">WAITING</span></div>
+    <div class="hud-row full"><span class="hud-label"><span class="icon">⌖</span>GPS / Pose</span><span class="hud-value success" id="gps-mode">AVAILABLE</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">∡</span>Offset</span><span class="hud-value accent" id="hud-offset">0.0°</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">∡</span>Angle Min</span><span class="hud-value accent" id="hud-angle-min">0°</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">∡</span>Angle Max</span><span class="hud-value accent" id="hud-angle-max">360°</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">◉</span>View</span><span class="hud-value" id="hud-view">TOP</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">▦</span>Ground</span><span class="hud-value success" id="hud-ground">ON</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">●</span>Last Pts</span><span class="hud-value" id="lastpts">0</span></div>
+    <div class="hud-divider"></div>
+    <div class="hud-row full"><span class="hud-label"><span class="icon">✥</span>Area Nav</span><span class="hud-value warning" id="area-mode">OFF</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">⌖</span>Area X/Z</span><span class="hud-value accent" id="area-center">0.00, 0.00</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">◈</span>Visible</span><span class="hud-value" id="area-visible">0</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">◌</span>Surrounding</span><span class="hud-value" id="area-surrounding">0</span></div>
+    <div class="hud-divider"></div>
+    <div class="hud-row full"><span class="hud-label"><span class="icon">◆</span>Auto Pilot</span><span class="hud-value warning" id="nav-mode">IDLE</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">%</span>Coverage</span><span class="hud-value accent" id="nav-coverage">0.0%</span></div>
+    <div class="hud-row"><span class="hud-label"><span class="icon">⌖</span>Nav Goal</span><span class="hud-value" id="nav-goal">—</span></div>
+  </div>
+</div>
+
+<div id="area-nav-badge">AREA NAVIGATION OFF</div>
+<div id="autopilot-badge" title="A toggles browser-side Auto Pilot">AUTO PILOT OFF</div>
+<div id="operator-dock" class="glass">
+  <div class="operator-head"><span class="operator-kicker">P3-AT</span><span class="operator-title">OPERATOR</span></div>
+  <div class="operator-actions">
+    <button class="operator-action" onclick="window.dispatchEvent(new KeyboardEvent('keydown',{key:'a'}))"><b>A</b><span>Auto Pilot</span><small>exploration engine</small></button>
+    <button class="operator-action" onclick="window.dispatchEvent(new KeyboardEvent('keydown',{key:'m'}))"><b>M</b><span>2D Map</span><small>live occupancy</small></button>
+    <button class="operator-action compact" onclick="window.dispatchEvent(new KeyboardEvent('keydown',{key:'p'}))"><b>P</b><span>Palette</span><small>height colors</small></button>
+    <button class="operator-action compact" onclick="window.dispatchEvent(new KeyboardEvent('keydown',{key:'d'}))"><b>D</b><span>Debug</span><small>navigation diagnostics</small></button>
+    <button class="operator-action compact" onclick="window.dispatchEvent(new KeyboardEvent('keydown',{key:'s'}))"><b>S</b><span>Status</span><small>left telemetry panel</small></button>
+  </div>
+  <div class="operator-footer"><span>LINK</span><strong id="operator-link">—</strong><span>MODE</span><strong id="operator-mode">IDLE</strong></div>
+</div>
+
+<div id="nav-map-panel">
+  <div class="nav-map-header">
+    <div>
+      <div class="nav-map-title">2D NAVIGATION MAP</div>
+      <div class="nav-map-subtitle">3D LiDAR projected to occupancy grid</div>
+    </div>
+    <div class="nav-map-hint">M to close · A Auto Pilot</div>
+  </div>
+  <canvas id="nav-map-canvas"></canvas>
+  <div class="nav-map-legend">
+    <span><i class="nav-swatch unknown"></i> Unknown</span>
+    <span><i class="nav-swatch clear"></i> Clear</span>
+    <span><i class="nav-swatch obstacle"></i> Obstacle</span>
+    <span><i class="nav-swatch safety"></i> Safety margin</span>
+  </div>
+</div>
+
+<div id="exploration-map-panel" class="glass overlay-panel exploration-map-panel">
+  <div class="overlay-head"><div><span class="overlay-kicker">T</span><span class="overlay-title">EXPLORATION AREA MAP</span></div><button class="overlay-close" onclick="document.getElementById('exploration-map-panel')?.classList.remove('show')">×</button></div>
+  <div class="exploration-map-legend"><span><i style="background:#999"></i> Clear / incomplete</span><span><i style="background:#37be5f"></i> Discovered</span><span><i style="background:#dc3737"></i> Unreachable</span></div>
+  <canvas id="exploration-map-canvas"></canvas>
+</div>
+
+<button id="sidebar-toggle" title="Toggle Controls (Tab)">☰</button>
+
+<div id="sidebar">
+  <div class="sidebar-header"><div class="sidebar-title"><span class="icon">⚙</span><span>Controls</span></div></div>
+
+  <div class="section">
+    <div class="section-title">● LiDAR Offset</div>
+    <div class="control-group">
+      <label class="control-label">Rotate scan around robot X-axis</label>
+      <input type="range" id="offset-slider" min="-180" max="180" value="0" step="1">
+      <div class="range-value" id="offset-value">0°</div>
+      <button class="btn btn-primary" id="apply-btn"><span>↻</span> Apply & Reset Map</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">● Angle Filter</div>
+    <div class="control-group">
+      <label class="control-label">Min Angle (0–360°) — 0° = front, clockwise</label>
+      <input type="number" class="text-input" id="angle-min" min="0" max="360" value="0" step="1">
+      <label class="control-label">Max Angle (0–360°)</label>
+      <input type="number" class="text-input" id="angle-max" min="0" max="360" value="360" step="1">
+      <button class="btn btn-primary" id="angle-apply-btn"><span>↻</span> Apply Angle Filter</button>
+      <button class="btn btn-secondary btn-small" id="angle-reset-btn" style="margin-top:8px"><span>⟲</span> Reset to 0–360°</button>
+      <div style="margin-top:10px;font-size:11px;color:var(--text-muted);line-height:1.5">
+        Tip: If the robot body blocks rays at the back, try <b>min=200, max=160</b> (wrap-around) to keep only the front 160° arc.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">● Adaptive Map Rendering</div>
+    <div class="toggle-row"><span class="toggle-label">Adaptive voxels / point reduction</span><label class="toggle-switch"><input type="checkbox" id="adaptive-representation-toggle" checked><span class="toggle-slider"></span></label></div>
+    <div class="toggle-row"><span class="toggle-label">Show 3D map during Auto Pilot</span><label class="toggle-switch"><input type="checkbox" id="show-3d-autopilot-toggle" checked><span class="toggle-slider"></span></label></div>
+    <div style="margin-top:8px;font-size:11px;color:var(--text-muted);line-height:1.5">
+      The 3D viewer is optional during Auto Pilot. When hidden, the complete point cloud is still stored for backup and coverage, while the navigation engine continues building its robot-centred 1 m 2D map from the persistent cloud. Adaptive voxels are only a rendering optimization when 3D viewing is enabled.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">● Ground Plane</div>
+    <div class="toggle-row"><span class="toggle-label">Show ground grid & floor</span><label class="toggle-switch"><input type="checkbox" id="ground-toggle" checked><span class="toggle-slider"></span></label></div>
+    <button class="btn btn-secondary" id="flip-btn"><span>⇅</span> Flip to Bottom View</button>
+  </div>
+
+  <div class="section">
+    <div class="section-title">● Scan Inversion</div>
+    <div class="checkbox-group">
+      <label class="checkbox-label"><input type="checkbox" id="inv-x"> Invert X axis</label>
+      <label class="checkbox-label"><input type="checkbox" id="inv-y"> Invert Y axis</label>
+      <label class="checkbox-label"><input type="checkbox" id="inv-z"> Invert Z axis</label>
+    </div>
+    <button class="btn btn-secondary btn-small" id="inv-reset-btn" style="margin-top:8px">Reset Inversions</button>
+  </div>
+
+  <div class="section">
+    <div class="section-title">● Save Map</div>
+    <input type="text" class="text-input" id="map-name" placeholder="Enter map name...">
+    <button class="btn btn-primary" id="save-btn"><span>💾</span> Save as .lmap.gz</button>
+  </div>
+
+  <div class="section">
+    <div class="section-title">● Saved Maps</div>
+    <button class="btn btn-secondary btn-small" id="load-btn" style="margin-bottom:10px"><span>↻</span> Refresh List</button>
+    <div class="map-list" id="map-list"><div class="empty-state">Click refresh to load saved maps</div></div>
+  </div>
+</div>
+
+<div id="palette-legend" class="glass">
+  <div class="legend-title">Height Palette <span class="panel-key">P</span></div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#a020f0"></div> &lt; -0.5 (deep)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#800080"></div> -0.5 to 0.0</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#500000"></div> 0.0 to 0.05</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#cc0000"></div> 0.05 to 0.10</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#ff3300"></div> 0.10 to 0.15</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#ff6600"></div> 0.15 to 0.20</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#ffff00"></div> 0.20 to 0.50</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#00ff00"></div> 0.50 to 1.00</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#0088ff"></div> ≥ 1.00 (high)</div>
+</div>
+
+<div id="debug-window" class="glass overlay-panel">
+  <div class="overlay-head"><div><span class="overlay-kicker">D</span><span class="overlay-title">NAVIGATION DEBUG</span></div><button class="overlay-close" data-close="debug-window">×</button></div>
+  <pre id="debug-panel-content">Waiting for navigation diagnostics…</pre>
+  <div id="debug-stream"></div>
+</div>
+
+<div id="status-window" class="glass overlay-panel">
+  <div class="overlay-head"><div><span class="overlay-kicker">S</span><span class="overlay-title">ROBOT STATUS</span></div><button class="overlay-close" data-close="status-window">×</button></div>
+  <div id="status-panel-content">Waiting for robot status…</div>
+</div>
+
+<div id="debug-log" class="glass"></div>
+<div id="toast-container"></div>
+
+<div id="help-overlay">
+  <div class="help-panel">
+    <div class="help-title">⌨ Keyboard Shortcuts</div>
+    <div class="help-grid">
+      <div class="help-key">Tab</div><div class="help-desc">Toggle controls sidebar</div>
+      <div class="help-key">V</div><div class="help-desc">Flip ground view (top / bottom)</div>
+      <div class="help-key">G</div><div class="help-desc">Toggle Area Navigation mode</div>
+      <div class="help-key">Double-click + drag</div><div class="help-desc">Move the travelling map area (while G is active)</div>
+      <div class="help-key">Space</div><div class="help-desc">Toggle 3D scan from viewer</div>
+      <div class="help-key">↑ ↓ ← →</div><div class="help-desc">Manual drive from viewer</div>
+      <div class="help-key">A</div><div class="help-desc">Toggle browser-side Auto Pilot</div>
+      <div class="help-key">M</div><div class="help-desc">Show / hide the 2D navigation map</div>
+      <div class="help-key">T</div><div class="help-desc">Show / hide full selected-area tile map</div>
+      <div class="help-key">P</div><div class="help-desc">Show / hide color palette</div>
+      <div class="help-key">D</div><div class="help-desc">Show / hide navigation debug</div>
+      <div class="help-key">S</div><div class="help-desc">Show / hide robot status</div>
+      <div class="help-key">?</div><div class="help-desc">Show / hide this help</div>
+    </div>
+    <div class="help-close">Press ? or Escape to close</div>
+  </div>
+</div>
+
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="/static/js/main.js?v=target-diagnostics-20260913"></script>
+</body>
+</html>

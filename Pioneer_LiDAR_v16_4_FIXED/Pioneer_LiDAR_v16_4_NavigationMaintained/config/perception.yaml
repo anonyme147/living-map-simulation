@@ -1,0 +1,56 @@
+camera:
+  name: front camera
+  width: 640
+  height: 480
+  snapshot_interval_sec: 5.0
+detection:
+  enabled: true
+  # yolo | locate | hybrid. Runtime overrides may be placed in
+  # map_parameter.yaml under detection.
+  mode: hybrid
+  interval_sec: 5.0
+  model: models/detection/yolov8s-world.pt
+  object_list_file: config/detection_objects.txt
+  confidence: 0.50
+  candidate_confidence: 0.10
+  image_size: 640
+  tile_grid: 2
+  tiled_fallback: true
+  fire_smoke:
+    enabled: true
+    model: models/detection/fire_smoke_yolov8n.pt
+    confidence: 0.25
+    image_size: 320
+    interval_sec: 5.0
+  locate_anything:
+    cli: models/detection/locate-anything.cpp-master/locate-anything.cpp-master/build/examples/cli/Release/locate-anything-cli.exe
+    model: models/detection/locate-anything.cpp-master/locate-anything.cpp-master/models/locate-anything-q8_0.gguf
+    prompt: "Locate all the instances that match the following description: person</c>fire</c>house</c>tree"
+    threads: 8
+    # The native DLL keeps the GGUF loaded between captures.  Use fast for
+    # lower latency, or hybrid/slow when recall is more important.
+    mode: hybrid
+    timeout_sec: 900.0
+  # Pose synonyms improve zero-shot recall for a person lying on the ground.
+  classes: [person, lying person, person lying down, human lying on ground, casualty, fire, smoke, house, tree]
+depth:
+  enabled: true
+  # Empirical Webots VKITTI calibration: 7.31246 m GT / 16.38 m raw estimate.
+  # Re-estimate this from the dedicated depth benchmark when the scene changes.
+  scale: 0.446426
+  backend: depth_anything_v2
+  profile: outdoor
+  outdoor:
+    encoder: vits
+    checkpoint: models/depth/depth_anything_v2_metric_vkitti_vits.pth
+    max_depth_m: 80.0
+  indoor:
+    encoder: vits
+    checkpoint: models/depth/depth_anything_v2_metric_hypersim_vits.pth
+    max_depth_m: 20.0
+fusion:
+  # Use the central part of each box for depth so adjacent objects do not
+  # contaminate the metric depth estimate.
+  roi_border_fraction: 0.25
+  min_valid_depth_m: 0.05
+  max_valid_depth_m: 80.0

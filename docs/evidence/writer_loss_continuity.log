@@ -1,0 +1,25 @@
+Writer-loss mission continuity evidence run
+Run date: 2026-09-10
+
+[LAST WRITER UPDATE]
+step=100 battery_pct=92.70 beacons_dropped=2 dashboard_updates=100 alive=False state=KILLED
+
+[INJECTED FAILURE]
+POST /api/failure/writer -> 200 {"status":"writer killed"}
+After a 300 ms observation window: step=100 battery_pct=92.70 beacons_dropped=2 dashboard_updates=100 alive=False state=KILLED
+
+[BEACON STORE AFTER WRITER LOSS]
+BF98AC0 | victim_detected | local=(5.0, 7.0) | timestamp=2026-09-10T16:57:07.047051+00:00 | ttl_seconds=5400
+B7B7A61 | gas_leak | local=(3.0, 7.0) | timestamp=2026-09-10T16:57:07.374864+00:00 | ttl_seconds=1200
+store_total=2 store_active=2 store_expired=0 store_unsent=0
+
+[ONA AND COMMAND POST]
+beacons_forwarded=2 command_post_active_map_events=2
+
+[MISSION BRIEFING]
+briefing_id=BRIEF-001
+waypoints=B7B7A61:gas_leak, BF98AC0:victim_detected
+writer_alive_at_generation=False
+
+[EXECUTOR COMPLETION]
+success=True state=COMPLETE targets_visited=2 reports=arrival,arrival,mission_complete writer_alive=False
