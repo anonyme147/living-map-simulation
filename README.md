@@ -3,6 +3,33 @@
 An emergency-robotics simulation with a Writer robot, an Outside Network Area
 (ONA) relay, a Command Post dashboard, and Executor mission dispatch.
 
+## Project Description
+
+The Living Map preserves emergency observations when communication links or
+robots fail. A Writer robot detects hazards and victims, creates compact
+beacons with position, confidence, timestamp, TTL, and CRC integrity data, and
+passes them through the ONA. The Command Post displays confirmed observations
+and prepares missions for the most compatible Executor unit.
+
+## Architecture
+
+```text
+Writer Robot
+    -> beacon observation
+Outside Network Area (ONA)
+    -> RECEIVE, TRANSLATE, CARRY, BRIEF
+Command Post
+    -> live map, mission preparation, operator authorization
+Outside Network Area (ONA)
+    -> controlled mission relay
+Executor Robot
+    -> target navigation and mission-completed beacon
+```
+
+The Command Post never communicates directly with either robot. The ONA is the
+only communication boundary. Satellite transport is used when available; RF
+mesh routing provides continuity during supported link-failure scenarios.
+
 ## Requirements
 
 - Python 3.10 or later
