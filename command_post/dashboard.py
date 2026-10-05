@@ -371,7 +371,10 @@ def set_executor_mission_status(status: str) -> None:
 def _executor_units_payload() -> list[dict]:
     with _last_briefing_lock:
         briefing = dict(_last_briefing) if _last_briefing else None
-    event_types = [waypoint.get("event_type", "") for waypoint in briefing.get("waypoints", [])] if briefing else []
+    event_types = [
+        (waypoint.get("event_type", ""), waypoint.get("severity", 1.0))
+        for waypoint in briefing.get("waypoints", [])
+    ] if briefing else []
     with _executor_units_lock:
         units = []
         for unit in _executor_units.values():

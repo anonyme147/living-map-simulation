@@ -30,21 +30,21 @@ ENVIRONMENT_DESCRIPTION = (
 
 
 # ── Demonstration Geographic Coordinates ──────────────────────────────────────
-# Public, non-project-specific urban map anchor used only for visualization.
-BUILDING_SITE_LAT: float = 38.8895
-BUILDING_SITE_LON: float = -77.0353
+# Compact urban operating area used only for dashboard visualization.
+BUILDING_SITE_LAT: float = 36.8189
+BUILDING_SITE_LON: float = 10.1658
 BUILDING_SITE_ALT: float = 10.0
 
-# Incident Command Post (separate public demonstration location)
-COMMAND_POST_LAT: float = 38.9020
-COMMAND_POST_LON: float = -77.0000
+# Incident Command Post (separate demonstration location)
+COMMAND_POST_LAT: float = 36.8525
+COMMAND_POST_LON: float = 10.2085
 COMMAND_POST_ALT: float = 5.0
 
 # Staging Area Coordinates for Robots (clearly separated for multi-rover scenarios)
-WRITER_START_LAT: float = BUILDING_SITE_LAT
-WRITER_START_LON: float = BUILDING_SITE_LON
-EXECUTOR_START_LAT: float = 38.8840   # Generic forward staging area
-EXECUTOR_START_LON: float = -77.0500
+WRITER_START_LAT: float = 36.8189
+WRITER_START_LON: float = 10.1658
+EXECUTOR_START_LAT: float = 36.8480
+EXECUTOR_START_LON: float = 10.1620
 
 # ── GPS Anchor & Georeferencing ──────────────────────────────────────────────
 
@@ -52,7 +52,7 @@ EXECUTOR_START_LON: float = -77.0500
 class AnchorConfig:
     """
     Geodetic origin mapping local Cartesian frame (0, 0, 0) to true GPS.
-    Default: public, non-project-specific demonstration map anchor.
+    Default: configured demonstration map anchor.
     """
     origin_lat: float = BUILDING_SITE_LAT
     origin_lon: float = BUILDING_SITE_LON
