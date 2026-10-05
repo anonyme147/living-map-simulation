@@ -53,15 +53,6 @@ DEMO_REGISTRY: tuple[DemoDefinition, ...] = (
         mode="Nominal operation + physical robot visualization",
     ),
     DemoDefinition(
-        demo_id="webots_fire_response",
-        title="Webots Fire Response Chain",
-        description="Pioneer detects fire, ONA relays the authorized mission to a LiDAR TurtleBot firefighter, then the response unit extinguishes the fire and publishes mission completion.",
-        script="simulation/run_webots_fire_response_demo.py",
-        dashboard_port=5012,
-        launch_args=(),
-        mode="Physical Writer-to-Executor response chain",
-    ),
-    DemoDefinition(
         demo_id="satellite_mesh_failover",
         title="Satellite Failure → RF Mesh Failover",
         description="Normal satellite CARRY fails mid-mission; ONA automatically reroutes subsequent packets through the RF mesh.",
